@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Group3_iCARECBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="iCareAdmin">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="StartDate" Type="date" />
+    <Property Name="EndDate" Type="date" />
+  </EntityType>
+  <EntityType Name="iCareUser">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nchar" MaxLength="10" Nullable="false" />
+  </EntityType>
+  <EntityType Name="iCareWorker">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="Profession" Type="nchar" MaxLength="10" />
+    <Property Name="Type" Type="nchar" MaxLength="10" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'Group3_iCARECB.dbo.UserPassword' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="UserPassword">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="EncryptedPassword" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="EncryptedPassword" Type="char" MaxLength="10" Nullable="false" />
+    <Property Name="ExpirationDate" Type="date" />
+    <Property Name="LastChanged" Type="date" />
+  </EntityType>
+  <Association Name="FK_iCareAdmin_iCareUser">
+    <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+    <End Role="iCareAdmin" Type="Self.iCareAdmin" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="iCareAdmin">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_iCareWorker_iCareUser1">
+    <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+    <End Role="iCareWorker" Type="Self.iCareWorker" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="iCareWorker">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Group3_iCARECBModelStoreContainer">
+    <EntitySet Name="iCareAdmin" EntityType="Self.iCareAdmin" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="iCareUser" EntityType="Self.iCareUser" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="iCareWorker" EntityType="Self.iCareWorker" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserPassword" EntityType="Self.UserPassword" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [UserPassword].[UserID] AS [UserID], 
+    [UserPassword].[EncryptedPassword] AS [EncryptedPassword], 
+    [UserPassword].[ExpirationDate] AS [ExpirationDate], 
+    [UserPassword].[LastChanged] AS [LastChanged]
+    FROM [dbo].[UserPassword] AS [UserPassword]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_iCareAdmin_iCareUser" Association="Self.FK_iCareAdmin_iCareUser">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="iCareAdmin" EntitySet="iCareAdmin" />
+    </AssociationSet>
+    <AssociationSet Name="FK_iCareWorker_iCareUser1" Association="Self.FK_iCareWorker_iCareUser1">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="iCareWorker" EntitySet="iCareWorker" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

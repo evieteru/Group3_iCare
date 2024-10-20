@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Group3_iCARECBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="iCareAdmin">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="StartDate" Type="date" />
+          <Property Name="EndDate" Type="date" />
+        </EntityType>
+        <EntityType Name="iCareUser">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Username" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="iCareWorker">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Profession" Type="nchar" MaxLength="10" />
+          <Property Name="Type" Type="nchar" MaxLength="10" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Group3_iCARECB.dbo.UserPassword' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserPassword">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="EncryptedPassword" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="EncryptedPassword" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="ExpirationDate" Type="date" />
+          <Property Name="LastChanged" Type="date" />
+        </EntityType>
+        <Association Name="FK_iCareAdmin_iCareUser">
+          <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+          <End Role="iCareAdmin" Type="Self.iCareAdmin" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="iCareUser">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="iCareAdmin">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_iCareWorker_iCareUser1">
+          <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+          <End Role="iCareWorker" Type="Self.iCareWorker" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="iCareUser">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="iCareWorker">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Group3_iCARECBModelStoreContainer">
+          <EntitySet Name="iCareAdmin" EntityType="Self.iCareAdmin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="iCareUser" EntityType="Self.iCareUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="iCareWorker" EntityType="Self.iCareWorker" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPassword" EntityType="Self.UserPassword" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [UserPassword].[UserID] AS [UserID], 
+    [UserPassword].[EncryptedPassword] AS [EncryptedPassword], 
+    [UserPassword].[ExpirationDate] AS [ExpirationDate], 
+    [UserPassword].[LastChanged] AS [LastChanged]
+    FROM [dbo].[UserPassword] AS [UserPassword]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_iCareAdmin_iCareUser" Association="Self.FK_iCareAdmin_iCareUser">
+            <End Role="iCareUser" EntitySet="iCareUser" />
+            <End Role="iCareAdmin" EntitySet="iCareAdmin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_iCareWorker_iCareUser1" Association="Self.FK_iCareWorker_iCareUser1">
+            <End Role="iCareUser" EntitySet="iCareUser" />
+            <End Role="iCareWorker" EntitySet="iCareWorker" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Group3_iCARECBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="iCareAdmin">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="iCareUser" Relationship="Self.FK_iCareAdmin_iCareUser" FromRole="iCareAdmin" ToRole="iCareUser" />
+        </EntityType>
+        <EntityType Name="iCareUser">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="iCareAdmin" Relationship="Self.FK_iCareAdmin_iCareUser" FromRole="iCareUser" ToRole="iCareAdmin" />
+          <NavigationProperty Name="iCareWorker" Relationship="Self.FK_iCareWorker_iCareUser1" FromRole="iCareUser" ToRole="iCareWorker" />
+        </EntityType>
+        <EntityType Name="iCareWorker">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Profession" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="iCareUser" Relationship="Self.FK_iCareWorker_iCareUser1" FromRole="iCareWorker" ToRole="iCareUser" />
+        </EntityType>
+        <EntityType Name="UserPassword">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="EncryptedPassword" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="EncryptedPassword" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+          <Property Name="LastChanged" Type="DateTime" Precision="0" />
+        </EntityType>
+        <Association Name="FK_iCareAdmin_iCareUser">
+          <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+          <End Role="iCareAdmin" Type="Self.iCareAdmin" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="iCareUser">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="iCareAdmin">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_iCareWorker_iCareUser1">
+          <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+          <End Role="iCareWorker" Type="Self.iCareWorker" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="iCareUser">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="iCareWorker">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Group3_iCARECBEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="iCareAdmin" EntityType="Self.iCareAdmin" />
+          <EntitySet Name="iCareUser" EntityType="Self.iCareUser" />
+          <EntitySet Name="iCareWorker" EntityType="Self.iCareWorker" />
+          <EntitySet Name="UserPassword" EntityType="Self.UserPassword" />
+          <AssociationSet Name="FK_iCareAdmin_iCareUser" Association="Self.FK_iCareAdmin_iCareUser">
+            <End Role="iCareUser" EntitySet="iCareUser" />
+            <End Role="iCareAdmin" EntitySet="iCareAdmin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_iCareWorker_iCareUser1" Association="Self.FK_iCareWorker_iCareUser1">
+            <End Role="iCareUser" EntitySet="iCareUser" />
+            <End Role="iCareWorker" EntitySet="iCareWorker" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Group3_iCARECBModelStoreContainer" CdmEntityContainer="Group3_iCARECBEntities1">
+          <EntitySetMapping Name="iCareAdmin">
+            <EntityTypeMapping TypeName="Group3_iCARECBModel.iCareAdmin">
+              <MappingFragment StoreEntitySet="iCareAdmin">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="iCareUser">
+            <EntityTypeMapping TypeName="Group3_iCARECBModel.iCareUser">
+              <MappingFragment StoreEntitySet="iCareUser">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="iCareWorker">
+            <EntityTypeMapping TypeName="Group3_iCARECBModel.iCareWorker">
+              <MappingFragment StoreEntitySet="iCareWorker">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Profession" ColumnName="Profession" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPassword">
+            <EntityTypeMapping TypeName="Group3_iCARECBModel.UserPassword">
+              <MappingFragment StoreEntitySet="UserPassword">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="EncryptedPassword" ColumnName="EncryptedPassword" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="LastChanged" ColumnName="LastChanged" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

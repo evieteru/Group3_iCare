@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Group3_iCARECBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="iCareAdmin">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="StartDate" Type="DateTime" Precision="0" />
+    <Property Name="EndDate" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="iCareUser" Relationship="Self.FK_iCareAdmin_iCareUser" FromRole="iCareAdmin" ToRole="iCareUser" />
+  </EntityType>
+  <EntityType Name="iCareUser">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="iCareAdmin" Relationship="Self.FK_iCareAdmin_iCareUser" FromRole="iCareUser" ToRole="iCareAdmin" />
+    <NavigationProperty Name="iCareWorker" Relationship="Self.FK_iCareWorker_iCareUser1" FromRole="iCareUser" ToRole="iCareWorker" />
+  </EntityType>
+  <EntityType Name="iCareWorker">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="Profession" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="Type" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="iCareUser" Relationship="Self.FK_iCareWorker_iCareUser1" FromRole="iCareWorker" ToRole="iCareUser" />
+  </EntityType>
+  <EntityType Name="UserPassword">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="EncryptedPassword" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="EncryptedPassword" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+    <Property Name="LastChanged" Type="DateTime" Precision="0" />
+  </EntityType>
+  <Association Name="FK_iCareAdmin_iCareUser">
+    <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+    <End Role="iCareAdmin" Type="Self.iCareAdmin" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="iCareAdmin">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_iCareWorker_iCareUser1">
+    <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+    <End Role="iCareWorker" Type="Self.iCareWorker" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="iCareWorker">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Group3_iCARECBEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="iCareAdmin" EntityType="Self.iCareAdmin" />
+    <EntitySet Name="iCareUser" EntityType="Self.iCareUser" />
+    <EntitySet Name="iCareWorker" EntityType="Self.iCareWorker" />
+    <EntitySet Name="UserPassword" EntityType="Self.UserPassword" />
+    <AssociationSet Name="FK_iCareAdmin_iCareUser" Association="Self.FK_iCareAdmin_iCareUser">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="iCareAdmin" EntitySet="iCareAdmin" />
+    </AssociationSet>
+    <AssociationSet Name="FK_iCareWorker_iCareUser1" Association="Self.FK_iCareWorker_iCareUser1">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="iCareWorker" EntitySet="iCareWorker" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
