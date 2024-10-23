@@ -1,0 +1,50 @@
+﻿@model Group3_iCareAPP.Models.iCareUser
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>iCareUser</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.iCareAdmin.adminEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.iCareAdmin.adminEmail)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.iCareWorker.Profession)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.iCareWorker.Profession)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UserRole.PermissionName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserRole.PermissionName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.UserID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
