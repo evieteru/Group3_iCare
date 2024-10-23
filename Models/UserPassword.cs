@@ -18,5 +18,9 @@ namespace Group3_iCareAPP.Models
         public string EncryptedPassword { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
         public Nullable<System.DateTime> LastChanged { get; set; }
+        public int PasswordID { get; set; }
+        public string UserName { get; set; }
+    
+        public virtual iCareUser iCareUser { get; set; }
     }
 }

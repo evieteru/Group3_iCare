@@ -4,13 +4,28 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="98ce702e8d2241d2a25c22063f7bf907" Name="Diagram1">
+      <Diagram DiagramId="98ce702e8d2241d2a25c22063f7bf907" Name="Diagram1" ZoomLevel="64">
         <EntityTypeShape EntityType="Group3_iCARECBModel.iCareAdmin" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="Group3_iCARECBModel.iCareUser" Width="1.5" PointX="0.75" PointY="2.25" IsExpanded="true" />
         <EntityTypeShape EntityType="Group3_iCARECBModel.iCareWorker" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="Group3_iCARECBModel.UserPassword" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="Group3_iCARECBModel.FK_iCareAdmin_iCareUser" ManuallyRouted="false" />
         <AssociationConnector Association="Group3_iCARECBModel.FK_iCareWorker_iCareUser1" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Group3_iCARECBModel.DocumentMetadata" Width="1.5" PointX="8" PointY="4.75" />
+        <EntityTypeShape EntityType="Group3_iCARECBModel.DrugsDictionary" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Group3_iCARECBModel.GeoCodes" Width="1.5" PointX="8" PointY="11.875" />
+        <EntityTypeShape EntityType="Group3_iCARECBModel.ModificationHistory" Width="1.5" PointX="10.25" PointY="3.625" />
+        <EntityTypeShape EntityType="Group3_iCARECBModel.PatientRecord" Width="1.5" PointX="5.75" PointY="7.125" />
+        <EntityTypeShape EntityType="Group3_iCARECBModel.TreatmentRecord" Width="1.5" PointX="8" PointY="9.25" />
+        <EntityTypeShape EntityType="Group3_iCARECBModel.UserRole" Width="1.5" PointX="2.75" PointY="6.75" />
+        <AssociationConnector Association="Group3_iCARECBModel.FK_DocumentMetadata_iCareUser" />
+        <AssociationConnector Association="Group3_iCARECBModel.FK_DocumentMetadata_PatientRecord" />
+        <AssociationConnector Association="Group3_iCARECBModel.FK_ModificationHistory_DocumentMetadata" />
+        <AssociationConnector Association="Group3_iCARECBModel.FK_GeoCodes_PatientRecord" ></AssociationConnector>
+        <AssociationConnector Association="Group3_iCARECBModel.FK_ModificationHistory_iCareUser" />
+        <AssociationConnector Association="Group3_iCARECBModel.FK_UserPassword_iCareUser" />
+        <AssociationConnector Association="Group3_iCARECBModel.FK_TreatmentRecord_iCareUser" />
+        <AssociationConnector Association="Group3_iCARECBModel.FK_iCareUser_UserRole" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

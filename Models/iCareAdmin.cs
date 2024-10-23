@@ -17,6 +17,7 @@ namespace Group3_iCareAPP.Models
         public int UserID { get; set; }
         public Nullable<System.DateTime> StartDate { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
+        public string adminEmail { get; set; }
     
         public virtual iCareUser iCareUser { get; set; }
     }

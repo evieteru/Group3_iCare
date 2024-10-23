@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Course Registration System (CRS)</h1>
+    <p class="lead">CRS is an application to manage student information and registration system.</p>
+
+
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>@Html.ActionLink("Students", "Index", "Students")</h2>
+        <p>
+            Students Basic Information.
+        </p>
+        <!--<p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>-->
+    </div>
+
+    <div class="col-md-4">
+        <h2>@Html.ActionLink("Courses", "Index", "Courses")</h2>
+        <p>Courses Basic Information.</p>
+    </div>
+
+     <div class="col-md-4">
+        <h2>@Html.ActionLink("Course Registration", "Index", "Registrations")</h2>
+        <p>Students Course Registration.</p>
+    </div>
+
+</div>

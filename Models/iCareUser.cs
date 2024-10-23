@@ -14,10 +14,26 @@ namespace Group3_iCareAPP.Models
     
     public partial class iCareUser
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public iCareUser()
+        {
+            this.DocumentMetadata = new HashSet<DocumentMetadata>();
+            this.ModificationHistory = new HashSet<ModificationHistory>();
+            this.UserPassword = new HashSet<UserPassword>();
+        }
+    
         public int UserID { get; set; }
-        public string Username { get; set; }
+        public System.Guid PermissionID { get; set; }
+        public string FullName { get; set; }
     
         public virtual iCareAdmin iCareAdmin { get; set; }
         public virtual iCareWorker iCareWorker { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DocumentMetadata> DocumentMetadata { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ModificationHistory> ModificationHistory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserPassword> UserPassword { get; set; }
+        public virtual UserRole UserRole { get; set; }
     }
 }

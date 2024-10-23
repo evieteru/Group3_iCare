@@ -8,15 +8,21 @@
     <Property Name="StartDate" Type="DateTime" Precision="0" />
     <Property Name="EndDate" Type="DateTime" Precision="0" />
     <NavigationProperty Name="iCareUser" Relationship="Self.FK_iCareAdmin_iCareUser" FromRole="iCareAdmin" ToRole="iCareUser" />
+    <Property Name="adminEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="iCareUser">
     <Key>
       <PropertyRef Name="UserID" />
     </Key>
     <Property Name="UserID" Type="Int32" Nullable="false" />
-    <Property Name="Username" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
     <NavigationProperty Name="iCareAdmin" Relationship="Self.FK_iCareAdmin_iCareUser" FromRole="iCareUser" ToRole="iCareAdmin" />
     <NavigationProperty Name="iCareWorker" Relationship="Self.FK_iCareWorker_iCareUser1" FromRole="iCareUser" ToRole="iCareWorker" />
+    <NavigationProperty Name="DocumentMetadata" Relationship="Group3_iCARECBModel.FK_DocumentMetadata_iCareUser" FromRole="iCareUser" ToRole="DocumentMetadata" />
+    <NavigationProperty Name="ModificationHistory" Relationship="Group3_iCARECBModel.FK_ModificationHistory_iCareUser" FromRole="iCareUser" ToRole="ModificationHistory" />
+    <NavigationProperty Name="UserPassword" Relationship="Group3_iCARECBModel.FK_UserPassword_iCareUser" FromRole="iCareUser" ToRole="UserPassword" />
+    <Property Name="PermissionID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="UserRole" Relationship="Group3_iCARECBModel.FK_iCareUser_UserRole" FromRole="iCareUser" ToRole="UserRole" />
+    <Property Name="FullName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="iCareWorker">
     <Key>
@@ -29,13 +35,15 @@
   </EntityType>
   <EntityType Name="UserPassword">
     <Key>
-      <PropertyRef Name="UserID" />
-      <PropertyRef Name="EncryptedPassword" />
+      <PropertyRef Name="PasswordID" />
     </Key>
     <Property Name="UserID" Type="Int32" Nullable="false" />
     <Property Name="EncryptedPassword" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
     <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
     <Property Name="LastChanged" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="iCareUser" Relationship="Group3_iCARECBModel.FK_UserPassword_iCareUser" FromRole="UserPassword" ToRole="iCareUser" />
+    <Property Name="PasswordID" Type="Int32" Nullable="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
   </EntityType>
   <Association Name="FK_iCareAdmin_iCareUser">
     <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
@@ -74,5 +82,221 @@
       <End Role="iCareUser" EntitySet="iCareUser" />
       <End Role="iCareWorker" EntitySet="iCareWorker" />
     </AssociationSet>
+    <EntitySet Name="DocumentMetadata" EntityType="Group3_iCARECBModel.DocumentMetadata" />
+    <EntitySet Name="DrugsDictionary" EntityType="Group3_iCARECBModel.DrugsDictionary" />
+    <EntitySet Name="GeoCodes" EntityType="Group3_iCARECBModel.GeoCodes" />
+    <EntitySet Name="ModificationHistory" EntityType="Group3_iCARECBModel.ModificationHistory" />
+    <EntitySet Name="PatientRecord" EntityType="Group3_iCARECBModel.PatientRecord" />
+    <EntitySet Name="TreatmentRecord" EntityType="Group3_iCARECBModel.TreatmentRecord" />
+    <EntitySet Name="UserRole" EntityType="Group3_iCARECBModel.UserRole" />
+    <AssociationSet Name="FK_DocumentMetadata_iCareUser" Association="Group3_iCARECBModel.FK_DocumentMetadata_iCareUser">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="DocumentMetadata" EntitySet="DocumentMetadata" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DocumentMetadata_PatientRecord" Association="Group3_iCARECBModel.FK_DocumentMetadata_PatientRecord">
+      <End Role="PatientRecord" EntitySet="PatientRecord" />
+      <End Role="DocumentMetadata" EntitySet="DocumentMetadata" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ModificationHistory_DocumentMetadata" Association="Group3_iCARECBModel.FK_ModificationHistory_DocumentMetadata">
+      <End Role="DocumentMetadata" EntitySet="DocumentMetadata" />
+      <End Role="ModificationHistory" EntitySet="ModificationHistory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GeoCodes_PatientRecord" Association="Group3_iCARECBModel.FK_GeoCodes_PatientRecord">
+      <End Role="PatientRecord" EntitySet="PatientRecord" />
+      <End Role="GeoCodes" EntitySet="GeoCodes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ModificationHistory_iCareUser" Association="Group3_iCARECBModel.FK_ModificationHistory_iCareUser">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="ModificationHistory" EntitySet="ModificationHistory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserPassword_iCareUser" Association="Group3_iCARECBModel.FK_UserPassword_iCareUser">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="UserPassword" EntitySet="UserPassword" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TreatmentRecord_iCareUser" Association="Group3_iCARECBModel.FK_TreatmentRecord_iCareUser">
+      <End Role="PatientRecord" EntitySet="PatientRecord" />
+      <End Role="TreatmentRecord" EntitySet="TreatmentRecord" />
+    </AssociationSet>
+    <AssociationSet Name="FK_iCareUser_UserRole" Association="Group3_iCARECBModel.FK_iCareUser_UserRole">
+      <End Role="UserRole" EntitySet="UserRole" />
+      <End Role="iCareUser" EntitySet="iCareUser" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="DocumentMetadata">
+    <Key>
+      <PropertyRef Name="DocumentID" />
+    </Key>
+    <Property Name="DocumentID" Type="Guid" Nullable="false" />
+    <Property Name="DocumentName" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="CreationDate" Type="DateTime" Precision="0" />
+    <Property Name="PatientID" Type="Int32" Nullable="false" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="iCareUser" Relationship="Group3_iCARECBModel.FK_DocumentMetadata_iCareUser" FromRole="DocumentMetadata" ToRole="iCareUser" />
+    <NavigationProperty Name="PatientRecord" Relationship="Group3_iCARECBModel.FK_DocumentMetadata_PatientRecord" FromRole="DocumentMetadata" ToRole="PatientRecord" />
+    <NavigationProperty Name="ModificationHistory" Relationship="Group3_iCARECBModel.FK_ModificationHistory_DocumentMetadata" FromRole="DocumentMetadata" ToRole="ModificationHistory" />
+  </EntityType>
+  <EntityType Name="DrugsDictionary">
+    <Key>
+      <PropertyRef Name="DrugID" />
+    </Key>
+    <Property Name="DrugID" Type="Guid" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DrugName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="GeoCodes">
+    <Key>
+      <PropertyRef Name="GeoCodeID" />
+    </Key>
+    <Property Name="GeoCodeID" Type="Int32" Nullable="false" />
+    <Property Name="PatientID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="PatientRecord" Relationship="Group3_iCARECBModel.FK_GeoCodes_PatientRecord" FromRole="GeoCodes" ToRole="PatientRecord" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="ModificationHistory">
+    <Key>
+      <PropertyRef Name="ModificationID" />
+    </Key>
+    <Property Name="ModificationID" Type="Guid" Nullable="false" />
+    <Property Name="DocumentID" Type="Guid" Nullable="false" />
+    <Property Name="ModificationDate" Type="DateTime" Precision="0" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="DocumentMetadata" Relationship="Group3_iCARECBModel.FK_ModificationHistory_DocumentMetadata" FromRole="ModificationHistory" ToRole="DocumentMetadata" />
+    <NavigationProperty Name="iCareUser" Relationship="Group3_iCARECBModel.FK_ModificationHistory_iCareUser" FromRole="ModificationHistory" ToRole="iCareUser" />
+  </EntityType>
+  <EntityType Name="PatientRecord">
+    <Key>
+      <PropertyRef Name="PatientID" />
+    </Key>
+    <Property Name="PatientID" Type="Int32" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="DocumentMetadata" Relationship="Group3_iCARECBModel.FK_DocumentMetadata_PatientRecord" FromRole="PatientRecord" ToRole="DocumentMetadata" />
+    <NavigationProperty Name="GeoCodes" Relationship="Group3_iCARECBModel.FK_GeoCodes_PatientRecord" FromRole="PatientRecord" ToRole="GeoCodes" />
+    <NavigationProperty Name="TreatmentRecord" Relationship="Group3_iCARECBModel.FK_TreatmentRecord_iCareUser" FromRole="PatientRecord" ToRole="TreatmentRecord" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="DateOfBirth" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TreatmentArea" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Height" Type="Double" />
+    <Property Name="Weight" Type="Double" />
+    <Property Name="BloodGroup" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="BedID" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TreatmentRecord">
+    <Key>
+      <PropertyRef Name="AssignmentID" />
+    </Key>
+    <Property Name="AssignmentID" Type="Int32" Nullable="false" />
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="PatientID" Type="Int32" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="PatientRecord" Relationship="Group3_iCARECBModel.FK_TreatmentRecord_iCareUser" FromRole="TreatmentRecord" ToRole="PatientRecord" />
+    <Property Name="TreatmentDate" Type="DateTime" Precision="0" />
+  </EntityType>
+  <EntityType Name="UserRole">
+    <Key>
+      <PropertyRef Name="PermissionID" />
+    </Key>
+    <Property Name="PermissionName" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="PermissionID" Type="Guid" Nullable="false" />
+    <Property Name="SystemAdmin" Type="Boolean" />
+    <Property Name="Doctor" Type="Boolean" />
+    <Property Name="Nurse" Type="Boolean" />
+    <NavigationProperty Name="iCareUser" Relationship="Group3_iCARECBModel.FK_iCareUser_UserRole" FromRole="UserRole" ToRole="iCareUser" />
+  </EntityType>
+  <Association Name="FK_DocumentMetadata_iCareUser">
+    <End Type="Group3_iCARECBModel.iCareUser" Role="iCareUser" Multiplicity="1" />
+    <End Type="Group3_iCARECBModel.DocumentMetadata" Role="DocumentMetadata" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="DocumentMetadata">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DocumentMetadata_PatientRecord">
+    <End Type="Group3_iCARECBModel.PatientRecord" Role="PatientRecord" Multiplicity="1" />
+    <End Type="Group3_iCARECBModel.DocumentMetadata" Role="DocumentMetadata" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PatientRecord">
+        <PropertyRef Name="PatientID" />
+      </Principal>
+      <Dependent Role="DocumentMetadata">
+        <PropertyRef Name="PatientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ModificationHistory_DocumentMetadata">
+    <End Type="Group3_iCARECBModel.DocumentMetadata" Role="DocumentMetadata" Multiplicity="1" />
+    <End Type="Group3_iCARECBModel.ModificationHistory" Role="ModificationHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DocumentMetadata">
+        <PropertyRef Name="DocumentID" />
+      </Principal>
+      <Dependent Role="ModificationHistory">
+        <PropertyRef Name="DocumentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GeoCodes_PatientRecord">
+    <End Type="Group3_iCARECBModel.PatientRecord" Role="PatientRecord" Multiplicity="1" />
+    <End Type="Group3_iCARECBModel.GeoCodes" Role="GeoCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PatientRecord">
+        <PropertyRef Name="PatientID" />
+      </Principal>
+      <Dependent Role="GeoCodes">
+        <PropertyRef Name="PatientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ModificationHistory_iCareUser">
+    <End Type="Group3_iCARECBModel.iCareUser" Role="iCareUser" Multiplicity="1" />
+    <End Type="Group3_iCARECBModel.ModificationHistory" Role="ModificationHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="ModificationHistory">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserPassword_iCareUser">
+    <End Type="Group3_iCARECBModel.iCareUser" Role="iCareUser" Multiplicity="1" />
+    <End Type="Group3_iCARECBModel.UserPassword" Role="UserPassword" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="UserPassword">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TreatmentRecord_iCareUser">
+    <End Type="Group3_iCARECBModel.PatientRecord" Role="PatientRecord" Multiplicity="1" />
+    <End Type="Group3_iCARECBModel.TreatmentRecord" Role="TreatmentRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PatientRecord">
+        <PropertyRef Name="PatientID" />
+      </Principal>
+      <Dependent Role="TreatmentRecord">
+        <PropertyRef Name="PatientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_iCareUser_UserRole">
+    <End Type="Group3_iCARECBModel.UserRole" Role="UserRole" Multiplicity="1" />
+    <End Type="Group3_iCARECBModel.iCareUser" Role="iCareUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserRole">
+        <PropertyRef Name="PermissionID" />
+      </Principal>
+      <Dependent Role="iCareUser">
+        <PropertyRef Name="PermissionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

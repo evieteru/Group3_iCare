@@ -1,5 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="Group3_iCARECBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="DocumentMetadata">
+    <Key>
+      <PropertyRef Name="DocumentID" />
+    </Key>
+    <Property Name="DocumentID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="DocumentName" Type="nchar" MaxLength="10" />
+    <Property Name="CreationDate" Type="date" />
+    <Property Name="PatientID" Type="int" Nullable="false" />
+    <Property Name="UserID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DrugsDictionary">
+    <Key>
+      <PropertyRef Name="DrugID" />
+    </Key>
+    <Property Name="DrugID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="DrugName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Description" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="GeoCodes">
+    <Key>
+      <PropertyRef Name="GeoCodeID" />
+    </Key>
+    <Property Name="GeoCodeID" Type="int" Nullable="false" />
+    <Property Name="PatientID" Type="int" Nullable="false" />
+    <Property Name="Description" Type="varchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="iCareAdmin">
     <Key>
       <PropertyRef Name="UserID" />
@@ -7,13 +33,15 @@
     <Property Name="UserID" Type="int" Nullable="false" />
     <Property Name="StartDate" Type="date" />
     <Property Name="EndDate" Type="date" />
+    <Property Name="adminEmail" Type="varchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="iCareUser">
     <Key>
       <PropertyRef Name="UserID" />
     </Key>
     <Property Name="UserID" Type="int" Nullable="false" />
-    <Property Name="Username" Type="nchar" MaxLength="10" Nullable="false" />
+    <Property Name="FullName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="PermissionID" Type="uniqueidentifier" Nullable="false" />
   </EntityType>
   <EntityType Name="iCareWorker">
     <Key>
@@ -23,18 +51,97 @@
     <Property Name="Profession" Type="nchar" MaxLength="10" />
     <Property Name="Type" Type="nchar" MaxLength="10" />
   </EntityType>
-  <!--Errors Found During Generation:
-warning 6002: The table/view 'Group3_iCARECB.dbo.UserPassword' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="ModificationHistory">
+    <Key>
+      <PropertyRef Name="ModificationID" />
+    </Key>
+    <Property Name="ModificationID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="DocumentID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ModificationDate" Type="date" />
+    <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="UserID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PatientRecord">
+    <Key>
+      <PropertyRef Name="PatientID" />
+    </Key>
+    <Property Name="PatientID" Type="int" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="50" />
+    <Property Name="DateOfBirth" Type="varchar" MaxLength="50" />
+    <Property Name="Address" Type="nchar" MaxLength="10" />
+    <Property Name="TreatmentArea" Type="varchar" MaxLength="50" />
+    <Property Name="Height" Type="float" />
+    <Property Name="Weight" Type="float" />
+    <Property Name="BloodGroup" Type="nchar" MaxLength="10" />
+    <Property Name="BedID" Type="nchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="TreatmentRecord">
+    <Key>
+      <PropertyRef Name="AssignmentID" />
+    </Key>
+    <Property Name="AssignmentID" Type="int" Nullable="false" />
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="PatientID" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+    <Property Name="TreatmentDate" Type="date" />
+  </EntityType>
   <EntityType Name="UserPassword">
     <Key>
-      <PropertyRef Name="UserID" />
-      <PropertyRef Name="EncryptedPassword" />
+      <PropertyRef Name="PasswordID" />
     </Key>
-    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="PasswordID" Type="int" Nullable="false" />
     <Property Name="EncryptedPassword" Type="char" MaxLength="10" Nullable="false" />
     <Property Name="ExpirationDate" Type="date" />
     <Property Name="LastChanged" Type="date" />
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="UserName" Type="nchar" MaxLength="10" Nullable="false" />
   </EntityType>
+  <EntityType Name="UserRole">
+    <Key>
+      <PropertyRef Name="PermissionID" />
+    </Key>
+    <Property Name="PermissionName" Type="nchar" MaxLength="10" Nullable="false" />
+    <Property Name="PermissionID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="SystemAdmin" Type="bit" />
+    <Property Name="Doctor" Type="bit" />
+    <Property Name="Nurse" Type="bit" />
+  </EntityType>
+  <Association Name="FK_DocumentMetadata_iCareUser">
+    <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+    <End Role="DocumentMetadata" Type="Self.DocumentMetadata" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="DocumentMetadata">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DocumentMetadata_PatientRecord">
+    <End Role="PatientRecord" Type="Self.PatientRecord" Multiplicity="1" />
+    <End Role="DocumentMetadata" Type="Self.DocumentMetadata" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PatientRecord">
+        <PropertyRef Name="PatientID" />
+      </Principal>
+      <Dependent Role="DocumentMetadata">
+        <PropertyRef Name="PatientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GeoCodes_PatientRecord">
+    <End Role="PatientRecord" Type="Self.PatientRecord" Multiplicity="1" />
+    <End Role="GeoCodes" Type="Self.GeoCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PatientRecord">
+        <PropertyRef Name="PatientID" />
+      </Principal>
+      <Dependent Role="GeoCodes">
+        <PropertyRef Name="PatientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_iCareAdmin_iCareUser">
     <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
     <End Role="iCareAdmin" Type="Self.iCareAdmin" Multiplicity="0..1" />
@@ -44,6 +151,18 @@ warning 6002: The table/view 'Group3_iCARECB.dbo.UserPassword' does not have a p
       </Principal>
       <Dependent Role="iCareAdmin">
         <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_iCareUser_UserRole">
+    <End Role="UserRole" Type="Self.UserRole" Multiplicity="1" />
+    <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserRole">
+        <PropertyRef Name="PermissionID" />
+      </Principal>
+      <Dependent Role="iCareUser">
+        <PropertyRef Name="PermissionID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -59,25 +178,105 @@ warning 6002: The table/view 'Group3_iCARECB.dbo.UserPassword' does not have a p
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_ModificationHistory_DocumentMetadata">
+    <End Role="DocumentMetadata" Type="Self.DocumentMetadata" Multiplicity="1" />
+    <End Role="ModificationHistory" Type="Self.ModificationHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DocumentMetadata">
+        <PropertyRef Name="DocumentID" />
+      </Principal>
+      <Dependent Role="ModificationHistory">
+        <PropertyRef Name="DocumentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ModificationHistory_iCareUser">
+    <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+    <End Role="ModificationHistory" Type="Self.ModificationHistory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="ModificationHistory">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TreatmentRecord_iCareUser">
+    <End Role="PatientRecord" Type="Self.PatientRecord" Multiplicity="1" />
+    <End Role="TreatmentRecord" Type="Self.TreatmentRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PatientRecord">
+        <PropertyRef Name="PatientID" />
+      </Principal>
+      <Dependent Role="TreatmentRecord">
+        <PropertyRef Name="PatientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserPassword_iCareUser">
+    <End Role="iCareUser" Type="Self.iCareUser" Multiplicity="1" />
+    <End Role="UserPassword" Type="Self.UserPassword" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="iCareUser">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="UserPassword">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <EntityContainer Name="Group3_iCARECBModelStoreContainer">
+    <EntitySet Name="DocumentMetadata" EntityType="Self.DocumentMetadata" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DrugsDictionary" EntityType="Self.DrugsDictionary" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="GeoCodes" EntityType="Self.GeoCodes" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="iCareAdmin" EntityType="Self.iCareAdmin" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="iCareUser" EntityType="Self.iCareUser" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="iCareWorker" EntityType="Self.iCareWorker" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="UserPassword" EntityType="Self.UserPassword" store:Type="Tables" store:Schema="dbo">
-      <DefiningQuery>SELECT 
-    [UserPassword].[UserID] AS [UserID], 
-    [UserPassword].[EncryptedPassword] AS [EncryptedPassword], 
-    [UserPassword].[ExpirationDate] AS [ExpirationDate], 
-    [UserPassword].[LastChanged] AS [LastChanged]
-    FROM [dbo].[UserPassword] AS [UserPassword]</DefiningQuery>
-    </EntitySet>
+    <EntitySet Name="ModificationHistory" EntityType="Self.ModificationHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PatientRecord" EntityType="Self.PatientRecord" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TreatmentRecord" EntityType="Self.TreatmentRecord" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserPassword" EntityType="Self.UserPassword" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_DocumentMetadata_iCareUser" Association="Self.FK_DocumentMetadata_iCareUser">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="DocumentMetadata" EntitySet="DocumentMetadata" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DocumentMetadata_PatientRecord" Association="Self.FK_DocumentMetadata_PatientRecord">
+      <End Role="PatientRecord" EntitySet="PatientRecord" />
+      <End Role="DocumentMetadata" EntitySet="DocumentMetadata" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GeoCodes_PatientRecord" Association="Self.FK_GeoCodes_PatientRecord">
+      <End Role="PatientRecord" EntitySet="PatientRecord" />
+      <End Role="GeoCodes" EntitySet="GeoCodes" />
+    </AssociationSet>
     <AssociationSet Name="FK_iCareAdmin_iCareUser" Association="Self.FK_iCareAdmin_iCareUser">
       <End Role="iCareUser" EntitySet="iCareUser" />
       <End Role="iCareAdmin" EntitySet="iCareAdmin" />
     </AssociationSet>
+    <AssociationSet Name="FK_iCareUser_UserRole" Association="Self.FK_iCareUser_UserRole">
+      <End Role="UserRole" EntitySet="UserRole" />
+      <End Role="iCareUser" EntitySet="iCareUser" />
+    </AssociationSet>
     <AssociationSet Name="FK_iCareWorker_iCareUser1" Association="Self.FK_iCareWorker_iCareUser1">
       <End Role="iCareUser" EntitySet="iCareUser" />
       <End Role="iCareWorker" EntitySet="iCareWorker" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ModificationHistory_DocumentMetadata" Association="Self.FK_ModificationHistory_DocumentMetadata">
+      <End Role="DocumentMetadata" EntitySet="DocumentMetadata" />
+      <End Role="ModificationHistory" EntitySet="ModificationHistory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ModificationHistory_iCareUser" Association="Self.FK_ModificationHistory_iCareUser">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="ModificationHistory" EntitySet="ModificationHistory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TreatmentRecord_iCareUser" Association="Self.FK_TreatmentRecord_iCareUser">
+      <End Role="PatientRecord" EntitySet="PatientRecord" />
+      <End Role="TreatmentRecord" EntitySet="TreatmentRecord" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserPassword_iCareUser" Association="Self.FK_UserPassword_iCareUser">
+      <End Role="iCareUser" EntitySet="iCareUser" />
+      <End Role="UserPassword" EntitySet="UserPassword" />
     </AssociationSet>
   </EntityContainer>
 </Schema>
