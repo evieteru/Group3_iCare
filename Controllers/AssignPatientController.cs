@@ -12,23 +12,23 @@ namespace Group3_iCareAPP.Controllers
 {
     public class AssignPatientController : Controller
     {
-        private Group3_iCARECBEntities1 db = new Group3_iCARECBEntities1();
+        private Group3_iCARECBEntities1 db = new Group3_iCARECBEntities1();             //Instance of Entity Framework DbContext, provides access to database
 
         // GET: TreatmentRecords
-        public ActionResult Index()
+        public ActionResult Index()                                                     //Retrieves a list of all entities from the database
         {
-            var treatmentRecord = db.TreatmentRecord.Include(t => t.PatientRecord);
-            return View(treatmentRecord.ToList());
+            var treatmentRecord = db.TreatmentRecord.Include(t => t.PatientRecord);     //Entity Framework method, retrieves related data from PatientRecord
+            return View(treatmentRecord.ToList());                                      //Sends the list to the corresponding Index view
         }
 
         // GET: TreatmentRecords/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id)                                            //Fetches a single record based on the id
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TreatmentRecord treatmentRecord = db.TreatmentRecord.Find(id);
+            TreatmentRecord treatmentRecord = db.TreatmentRecord.Find(id);              //Retrieves the entry with the matching primary key
             if (treatmentRecord == null)
             {
                 return HttpNotFound();
@@ -39,7 +39,7 @@ namespace Group3_iCareAPP.Controllers
         // GET: TreatmentRecords/Create
         public ActionResult Create()
         {
-            ViewBag.PatientID = new SelectList(db.PatientRecord, "PatientID", "Address");
+            ViewBag.PatientID = new SelectList(db.PatientRecord, "PatientID", "Address");   //Populates a dropdown list of PatientIDs from PatientRecord for the user to select when creating a TreatmentRecord
             return View();
         }
 
@@ -48,12 +48,12 @@ namespace Group3_iCareAPP.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AssignmentID,UserID,PatientID,Description,TreatmentDate")] TreatmentRecord treatmentRecord)
+        public ActionResult Create([Bind(Include = "AssignmentID,UserID,PatientID,Description,TreatmentDate")] TreatmentRecord treatmentRecord) //Handles for submission to create a new record
         {
             if (ModelState.IsValid)
             {
-                db.TreatmentRecord.Add(treatmentRecord);
-                db.SaveChanges();
+                db.TreatmentRecord.Add(treatmentRecord);                           //Adds new record to the database
+                db.SaveChanges();                                                  //Commits changes to the database
                 return RedirectToAction("Index");
             }
 
@@ -62,7 +62,7 @@ namespace Group3_iCareAPP.Controllers
         }
 
         // GET: TreatmentRecords/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id)                       //Fetches a record by id and displays existing data for editing
         {
             if (id == null)
             {
@@ -82,7 +82,7 @@ namespace Group3_iCareAPP.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AssignmentID,UserID,PatientID,Description,TreatmentDate")] TreatmentRecord treatmentRecord)
+        public ActionResult Edit([Bind(Include = "AssignmentID,UserID,PatientID,Description,TreatmentDate")] TreatmentRecord treatmentRecord) //Submits edited data to update the record in the database
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace Group3_iCareAPP.Controllers
         }
 
         // GET: TreatmentRecords/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id)         //Fetches record to confirm deletion
         {
             if (id == null)
             {
@@ -112,7 +112,7 @@ namespace Group3_iCareAPP.Controllers
         // POST: TreatmentRecords/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)         //Deletes from database
         {
             TreatmentRecord treatmentRecord = db.TreatmentRecord.Find(id);
             db.TreatmentRecord.Remove(treatmentRecord);
@@ -120,7 +120,7 @@ namespace Group3_iCareAPP.Controllers
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)     //cleanup method for when database connection is no longer needed
         {
             if (disposing)
             {

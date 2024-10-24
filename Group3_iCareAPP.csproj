@@ -305,6 +305,7 @@
     <Content Include="Views\ManagePatientRecord\Details.cshtml" />
     <Content Include="Views\ManagePatientRecord\Edit.cshtml" />
     <Content Include="Views\ManagePatientRecord\Index.cshtml" />
+    <Content Include="Views\UserAuthentication\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
